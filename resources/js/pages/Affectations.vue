@@ -9,7 +9,6 @@
         <div v-if="msg" class="msg ok">{{ msg }}</div>
         <div v-if="error" class="msg err">{{ error }}</div>
 
-        <!-- formulaire admin seulement -->
         <form
           v-if="isAdmin"
           ref="editorCard"

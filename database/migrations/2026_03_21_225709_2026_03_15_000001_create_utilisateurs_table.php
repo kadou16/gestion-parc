@@ -6,19 +6,13 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    
     public function up(): void
     {
-        // Héritage géré via la table unique users (colonne role)
     }
 
-    /**
-     * Reverse the migrations.
-     */
+   
     public function down(): void
     {
-        // no-op
     }
 };

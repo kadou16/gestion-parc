@@ -20,8 +20,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me',      [AuthController::class, 'me']);
     Route::put('/me',      [AuthController::class, 'updateMe']);
 
-    // Routes protégées : seul un Admin peut écrire/modifier
-    // Le Middleware va autoriser l'Admin à tout faire, et le Conducteur uniquement à faire des GET
     Route::middleware('admin')->group(function () {
         Route::get('documents/{id}/visualiser', [DocumentController::class, 'visualiser']);
         Route::get('documents/{id}/telecharger', [DocumentController::class, 'telecharger']);

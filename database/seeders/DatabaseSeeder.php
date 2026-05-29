@@ -11,18 +11,14 @@ use App\Models\EvaluationConducteur;
 use App\Models\Maintenance;
 use App\Models\Utilisateur;
 use App\Models\Vehicule;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
+    
     public function run(): void
     {
-        // 1) Admin user + profile
         $utilisateur = Utilisateur::create([
             'nom' => 'Test',
             'prenom' => 'User',
@@ -36,7 +32,6 @@ class DatabaseSeeder extends Seeder
             'motdePasse' => $utilisateur->motdePasse,
         ]);
 
-        // 2) Conducteur user + profile
         $userConducteur = Utilisateur::create([
             'nom' => 'Ali',
             'prenom' => 'Karim',
@@ -51,7 +46,6 @@ class DatabaseSeeder extends Seeder
             'DateExpPermis' => now()->addYears(2)->toDateString(),
         ]);
 
-        // 3) Vehicule
         $vehicule = Vehicule::create([
             'administrateur_id' => $administrateur->idAdministrateur,
             'immatriculation' => '12345-116-16',
@@ -63,7 +57,6 @@ class DatabaseSeeder extends Seeder
             'etat' => 'Bon',
         ]);
 
-        // 4) Maintenance
         $maintenance = Maintenance::create([
             'vehicule_id' => $vehicule->idVehicule,
             'type' => 'Préventive',
@@ -75,7 +68,6 @@ class DatabaseSeeder extends Seeder
             'prestataire' => 'Garage Central',
         ]);
 
-        // 5) Document
         $document = Document::create([
             'vehicule_id' => $vehicule->idVehicule,
             'type' => 'Assurance',
@@ -84,7 +76,6 @@ class DatabaseSeeder extends Seeder
             'statut' => 'Valide',
         ]);
 
-        // 6) Affectation
         $affectation = Affectation::create([
             'vehicule_id' => $vehicule->idVehicule,
             'conducteur_id' => $conducteur->idConducteur,
@@ -96,7 +87,6 @@ class DatabaseSeeder extends Seeder
             'coutGenere' => 12000,
         ]);
 
-        // 7) Evaluation conducteur (+ lien avec affectation)
         $evaluation = EvaluationConducteur::create([
             'conducteur_id' => $conducteur->idConducteur,
             'nombreSinistres' => 0,
@@ -108,7 +98,6 @@ class DatabaseSeeder extends Seeder
         $evaluation->affectations()->sync([$affectation->idAffectation]);
         $evaluation->calculerScore();
 
-        // 8) Alertes
         Alerte::create([
             'document_id' => $document->idDocument,
             'maintenance_id' => null,

@@ -2,7 +2,6 @@
   <div class="dashboard-layout">
     <SidebarMenu />
 
-    <!-- Main Content -->
     <main class="main-content">
       <div class="page-content">
         <header class="top-bar">
@@ -16,7 +15,6 @@
         <div v-if="loading" class="info-banner">Chargement des statistiques...</div>
         <div v-if="error" class="error-banner">{{ error }}</div>
 
-        <!-- Stats Cards -->
         <section class="stats-grid" aria-label="Statistiques du parc">
           <div class="stat-card blue">
             <div class="stat-icon">🚙</div>
@@ -48,10 +46,9 @@
           </div>
         </section>
 
-        <!-- Welcome Message -->
         <div class="welcome-card">
-          <h2>Bienvenue 👋</h2>
-          <p>Système de gestion et d'analyse du parc automobile — SAPS</p>
+          <h2>Bienvenue👋</h2>
+          <p>Système de gestion et d'analyse du parc automobile SAPS</p>
 
           <div class="actions">
             <router-link to="/vehicules" class="action-btn">Voir les véhicules</router-link>

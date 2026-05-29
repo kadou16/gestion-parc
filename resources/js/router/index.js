@@ -32,7 +32,6 @@ const router = createRouter({
     routes
 })
 
-// Navigation guard — redirect to login if not authenticated
 router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('token')
     const role = localStorage.getItem('role')
@@ -40,7 +39,7 @@ router.beforeEach((to, from, next) => {
     if (to.meta.requiresAuth && !token) {
         next('/')
     } else if (to.meta.role && to.meta.role !== role) {
-        next('/profil') // Redirect non-admins to their profile
+        next('/profil') 
     } else {
         next()
     }

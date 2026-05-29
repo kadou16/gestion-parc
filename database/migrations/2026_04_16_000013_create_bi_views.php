@@ -5,9 +5,7 @@ use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    
     public function up(): void
     {
         if (DB::getDriverName() !== 'mysql') {
@@ -104,9 +102,7 @@ return new class extends Migration
         SQL);
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    
     public function down(): void
     {
         if (DB::getDriverName() !== 'mysql') {

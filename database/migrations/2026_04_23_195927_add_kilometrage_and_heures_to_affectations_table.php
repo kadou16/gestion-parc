@@ -1,0 +1,42 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('affectations', function (Blueprint $table) {
+            if (!Schema::hasColumn('affectations', 'heure_depart')) {
+                $table->time('heure_depart')->nullable()->after('mission');
+            }
+            if (!Schema::hasColumn('affectations', 'heure_retour')) {
+                $table->time('heure_retour')->nullable()->after('heure_depart');
+            }
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('affectations', function (Blueprint $table) {
+            $columnsToDrop = [];
+            if (Schema::hasColumn('affectations', 'heure_depart')) {
+                $columnsToDrop[] = 'heure_depart';
+            }
+            if (Schema::hasColumn('affectations', 'heure_retour')) {
+                $columnsToDrop[] = 'heure_retour';
+            }
+            if (!empty($columnsToDrop)) {
+                $table->dropColumn($columnsToDrop);
+            }
+        });
+    }
+};

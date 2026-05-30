@@ -25,6 +25,8 @@ class AffectationController extends Controller
             'heure_retour' => 'nullable|date_format:H:i',
             'etatDepart' => 'required|string',
             'etatRetour' => 'nullable|string',
+            'kilometrage_depart' => 'required|numeric|min:0',
+            'kilometrage_retour' => 'nullable|numeric|min:0',
             'mission' => 'required|string',
             'coutGenere' => 'nullable|numeric|min:0',
         ]);
@@ -64,6 +66,8 @@ class AffectationController extends Controller
             'heure_retour' => 'nullable|date_format:H:i',
             'etatDepart' => 'sometimes|string',
             'etatRetour' => 'nullable|string',
+            'kilometrage_depart' => 'sometimes|numeric|min:0',
+            'kilometrage_retour' => 'nullable|numeric|min:0',
             'mission' => 'sometimes|string',
             'coutGenere' => 'sometimes|numeric|min:0',
         ]);

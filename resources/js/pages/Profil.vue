@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from '../services/api';
 import SidebarMenu from '../components/SidebarMenu.vue';
 
 export default {
@@ -110,7 +110,6 @@ export default {
         this.$router.push('/');
         return;
       }
-      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     },
     async loadProfil() {
       this.msg = '';

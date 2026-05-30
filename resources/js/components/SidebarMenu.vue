@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios, { clearAuthSession } from '../services/api';
 
 export default {
   name: 'SidebarMenu',
@@ -97,8 +97,7 @@ export default {
     },
     logout() {
       axios.post('/api/logout').finally(() => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
+        clearAuthSession();
         this.$router.push('/');
       });
     },

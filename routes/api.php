@@ -11,8 +11,8 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\AlerteController;
 use App\Http\Controllers\EvaluationConducteurController;
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login',    [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
+Route::post('/login',    [AuthController::class, 'login'])->middleware('throttle:10,1');
 
 Route::middleware('auth:sanctum')->group(function () {
 

@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios, { setAuthSession } from '../services/api';
 
 export default {
   name: 'Login',
@@ -58,10 +58,7 @@ export default {
         const response = await axios.post('/api/login', this.form);
         const { token, role } = response.data;
 
-        localStorage.setItem('token', token);
-        localStorage.setItem('role', role);
-
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        setAuthSession(token, role);
 
         if (role === 'Admin') {
           this.$router.push('/dashboard');

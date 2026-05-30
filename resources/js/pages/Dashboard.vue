@@ -62,6 +62,7 @@
 
 
 <script>
+import axios from '../services/api';
 import SidebarMenu from '../components/SidebarMenu.vue';
 
 export default {
@@ -82,16 +83,9 @@ export default {
     };
   },
   mounted() {
-    this.setAxiosToken();
     this.loadStats();
   },
   methods: {
-    setAxiosToken() {
-      const token = localStorage.getItem('token');
-      if (token) {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      }
-    },
     async loadStats() {
       this.loading = true;
       this.error = null;

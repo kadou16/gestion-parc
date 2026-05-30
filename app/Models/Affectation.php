@@ -14,7 +14,8 @@ class Affectation extends Model
     protected $fillable = [
         'vehicule_id', 'conducteur_id', 'dateDebut',
         'dateFin', 'etatDepart', 'etatRetour',
-        'mission', 'coutGenere', 'heure_depart', 'heure_retour'
+        'mission', 'coutGenere', 'heure_depart', 'heure_retour',
+        'kilometrage_depart', 'kilometrage_retour'
     ];
 
     public function vehicule()

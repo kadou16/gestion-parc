@@ -39,8 +39,17 @@ class EvaluationConducteur extends Model
         $penaliteSinistres = ((int) $this->nombreSinistres) * 15;
         $penaliteRetards = ((int) $this->retards) * 5;
         $penaliteCout = min($coutTotal / 1000, 30);
+        $kilometrageTotal = $this->affectations()
+            ->whereNotNull('kilometrage_depart')
+            ->whereNotNull('kilometrage_retour')
+            ->get()
+            ->sum(function ($affectation) {
+                return max(0, (float) $affectation->kilometrage_retour - (float) $affectation->kilometrage_depart);
+            });
+        $excesKilometrage = max(0, $kilometrageTotal - 300);
+        $penaliteKilometrage = min($excesKilometrage / 10, 20);
 
-        $score = max(0, 100 - $penaliteSinistres - $penaliteRetards - $penaliteCout);
+        $score = max(0, 100 - $penaliteSinistres - $penaliteRetards - $penaliteCout - $penaliteKilometrage);
         $this->scoreCalcule = round($score, 2);
         $this->save();
 

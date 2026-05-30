@@ -126,7 +126,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from '../services/api';
 import ConfirmModal from '../components/ConfirmModal.vue';
 import IconActionButton from '../components/IconActionButton.vue';
 import SidebarMenu from '../components/SidebarMenu.vue';
@@ -205,7 +205,6 @@ export default {
     initAuth() {
       const token = localStorage.getItem('token');
       if (!token) return this.$router.push('/');
-      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     },
     submitForm() {
       if (this.editMode) {

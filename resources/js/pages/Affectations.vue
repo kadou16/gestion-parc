@@ -78,6 +78,18 @@
             </div>
           </div>
 
+          <div class="grid">
+            <div>
+              <label>Kilométrage départ</label>
+              <input v-model="form.kilometrage_depart" type="number" min="0" step="1" placeholder="120000" required>
+            </div>
+
+            <div>
+              <label>Kilométrage retour <span style="font-size:0.85em;color:#6b7280;">(optionnel)</span></label>
+              <input v-model="form.kilometrage_retour" type="number" min="0" step="1" placeholder="120250">
+            </div>
+          </div>
+
           <div>
             <label>Mission</label>
             <input v-model="form.mission" type="text" placeholder="Transport étudiants" required>
@@ -178,7 +190,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from '../services/api';
 import ConfirmModal from '../components/ConfirmModal.vue';
 import IconActionButton from '../components/IconActionButton.vue';
 import SidebarMenu from '../components/SidebarMenu.vue';
@@ -220,6 +232,8 @@ export default {
         heure_retour: '',
         etatDepart: '',
         etatRetour: '',
+        kilometrage_depart: '',
+        kilometrage_retour: '',
         mission: '',
       },
       calendarOptions: {
@@ -272,6 +286,8 @@ export default {
         a.heure_retour,
         a.etatDepart,
         a.etatRetour,
+        a.kilometrage_depart,
+        a.kilometrage_retour,
         a.mission,
       ]
         .filter(Boolean)
@@ -284,7 +300,6 @@ export default {
         this.$router.push('/');
         return;
       }
-      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     },
     submitForm() {
       if (this.editMode) {
@@ -308,6 +323,8 @@ export default {
         heure_retour: affectation.heure_retour,
         etatDepart: affectation.etatDepart,
         etatRetour: affectation.etatRetour,
+        kilometrage_depart: affectation.kilometrage_depart,
+        kilometrage_retour: affectation.kilometrage_retour,
         mission: affectation.mission,
       };
       this.msg = `Modification de l'affectation ${this.editAffectationLabel}.`;
@@ -337,6 +354,8 @@ export default {
         heure_retour: '',
         etatDepart: '',
         etatRetour: '',
+        kilometrage_depart: '',
+        kilometrage_retour: '',
         mission: '',
       };
       this.error = '';
@@ -475,6 +494,8 @@ export default {
           heure_retour: '',
           etatDepart: '',
           etatRetour: '',
+          kilometrage_depart: '',
+          kilometrage_retour: '',
           mission: '',
         };
         this.loadAffectations();

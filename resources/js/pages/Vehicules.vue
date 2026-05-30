@@ -210,7 +210,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from '../services/api';
 import BaseModal from '../components/BaseModal.vue';
 import ConfirmModal from '../components/ConfirmModal.vue';
 import IconActionButton from '../components/IconActionButton.vue';
@@ -299,7 +299,6 @@ export default {
     initAuth() {
       const token = localStorage.getItem('token');
       if (!token) return this.$router.push('/');
-      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     },
     async loadAll() {
       await this.loadAdministrateurId();

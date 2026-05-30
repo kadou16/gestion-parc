@@ -10,6 +10,7 @@ import Evaluations from '../pages/Evaluations.vue'
 import Profil from '../pages/Profil.vue'
 import Alertes from '../pages/Alertes.vue'
 import PowerBI from '../pages/PowerBI.vue'
+import { getStoredRole, hasAuthToken } from '../services/api'
 
 const routes = [
     { path: '/',           component: Login },
@@ -33,10 +34,9 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    const token = localStorage.getItem('token')
-    const role = localStorage.getItem('role')
+    const role = getStoredRole()
 
-    if (to.meta.requiresAuth && !token) {
+    if (to.meta.requiresAuth && !hasAuthToken()) {
         next('/')
     } else if (to.meta.role && to.meta.role !== role) {
         next('/profil') 

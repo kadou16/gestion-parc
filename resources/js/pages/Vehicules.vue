@@ -15,7 +15,7 @@
           @submit.prevent="submitForm"
           style="margin-bottom: 2rem;"
         >
-          <h3 v-if="!editMode">Gérer les véhicules (ajout)</h3>
+          <h3 v-if="!editMode">Gérer les véhicules </h3>
           <h3 v-else>Modifier le véhicule</h3>
           <div v-if="editMode" class="edit-banner">
             <strong>Mode modification activé.</strong>

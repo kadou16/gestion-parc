@@ -28,6 +28,11 @@ class Maintenance extends Model
         return $this->hasMany(Alerte::class, 'maintenance_id', 'idMaintenance');
     }
 
+    public function documents()
+    {
+        return $this->hasMany(Document::class, 'maintenance_id', 'idMaintenance');
+    }
+
     public function planifierMaintenance(array $donnees): bool
     {
         return $this->update($donnees);

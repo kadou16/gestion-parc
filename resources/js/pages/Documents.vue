@@ -191,6 +191,44 @@
           @cancel="resetDeleteModal"
           @confirm="confirmDeleteDocument"
         />
+
+        <BaseModal
+          v-model="maintenanceModalOpen"
+          title="Choisir une maintenance"
+          subtitle="Seules les maintenances préventives sans document sont affichées."
+          size="sm"
+        >
+          <div>
+            <label>Maintenance préventive</label>
+            <select v-model="selectedMaintenanceId" required>
+              <option value="">-- choisir --</option>
+              <option
+                v-for="maintenance in eligibleMaintenances"
+                :key="maintenance.idMaintenance"
+                :value="maintenance.idMaintenance"
+              >
+                {{ maintenance.vehicule_id === form.vehicule_id ? '⭐ Recommandée - ' : '' }}
+                #{{ maintenance.idMaintenance }} -
+                {{ maintenance.vehicule?.immatriculation || 'Véhicule' }} -
+                {{ maintenance.dateDebut }} → {{ maintenance.dateFin || 'date fin non définie' }}
+              </option>
+            </select>
+            <p v-if="eligibleMaintenances.length === 0" class="modal-note">
+              Aucune maintenance préventive disponible sans document.
+            </p>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" @click="closeMaintenanceModal">Annuler</button>
+            <button
+              type="button"
+              :disabled="loading || !selectedMaintenanceId"
+              @click="confirmCreateDocument"
+            >
+              {{ loading ? 'Ajout...' : 'Confirmer' }}
+            </button>
+          </div>
+        </BaseModal>
       </div>
     </main>
   </div>
@@ -198,16 +236,18 @@
 
 <script>
 import axios from '../services/api';
+import BaseModal from '../components/BaseModal.vue';
 import ConfirmModal from '../components/ConfirmModal.vue';
 import IconActionButton from '../components/IconActionButton.vue';
 import SidebarMenu from '../components/SidebarMenu.vue';
 
 export default {
   name: 'DocumentsPage',
-  components: { SidebarMenu, ConfirmModal, IconActionButton },
+  components: { SidebarMenu, BaseModal, ConfirmModal, IconActionButton },
   data() {
     return {
       vehicules: [],
+      maintenances: [],
       documents: [],
       loading: false,
       editMode: false,
@@ -226,6 +266,8 @@ export default {
       error: '',
       searchTerm: '',
       appliedSearch: '',
+      maintenanceModalOpen: false,
+      selectedMaintenanceId: '',
       form: {
         vehicule_id: '',
         type: 'Assurance',
@@ -248,6 +290,19 @@ export default {
     },
     hasSelectedFile() {
       return Boolean(this.selectedFileName);
+    },
+    eligibleMaintenances() {
+      const usedMaintenanceIds = new Set(
+        this.documents
+          .map((document) => document.maintenance_id)
+          .filter(Boolean)
+          .map(Number)
+      );
+
+      return this.maintenances.filter((maintenance) => {
+        const hasNoDocument = !usedMaintenanceIds.has(Number(maintenance.idMaintenance));
+        return maintenance.type === 'Preventive' && hasNoDocument;
+      });
     },
   },
   methods: {
@@ -318,13 +373,39 @@ export default {
       if (!token) return this.$router.push('/');
     },
     async loadAll() {
-      const [v, d] = await Promise.all([axios.get('/api/vehicules'), axios.get('/api/documents')]);
+      const [v, d, m] = await Promise.all([
+        axios.get('/api/vehicules'),
+        axios.get('/api/documents'),
+        axios.get('/api/maintenances'),
+      ]);
       this.vehicules = v.data || [];
       this.documents = d.data || [];
+      this.maintenances = m.data || [];
     },
     async submitForm() {
       if (this.editMode) this.updateItem();
+      else if (this.form.type === 'Visite technique') this.openMaintenanceModal();
       else this.createDocument();
+    },
+    openMaintenanceModal() {
+      this.msg = '';
+      this.error = '';
+
+      if (this.eligibleMaintenances.length === 0) {
+        this.error = 'Aucune maintenance préventive disponible sans document.';
+        return;
+      }
+
+      this.selectedMaintenanceId = '';
+      this.maintenanceModalOpen = true;
+    },
+    closeMaintenanceModal() {
+      this.maintenanceModalOpen = false;
+      this.selectedMaintenanceId = '';
+    },
+    confirmCreateDocument() {
+      if (!this.selectedMaintenanceId) return;
+      this.createDocument();
     },
     editItem(item) {
       this.editMode = true;
@@ -406,6 +487,9 @@ export default {
       try {
         const payload = new FormData();
         payload.append('vehicule_id', this.form.vehicule_id);
+        if (this.selectedMaintenanceId) {
+          payload.append('maintenance_id', this.selectedMaintenanceId);
+        }
         payload.append('type', this.form.type);
         payload.append('dateDebut', this.form.dateDebut);
         payload.append('dateExpiration', this.form.dateExpiration);
@@ -421,6 +505,7 @@ export default {
         });
         this.msg = 'Document ajouté.';
         this.form = { vehicule_id: '', type: 'Assurance', dateDebut: '', dateExpiration: '', statut: '' };
+        this.closeMaintenanceModal();
         this.selectedFile = null;
         this.selectedFileName = '';
         if (this.$refs.fileInput) this.$refs.fileInput.value = '';
@@ -539,6 +624,8 @@ export default {
 .upload-status-text { margin-top: 2px; font-size: 13px; color: #64748b; }
 .actions-row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
 .actions-main { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+.modal-note { margin: 10px 0 0; color: #991b1b; font-size: 13px; }
 .btn-secondary { margin-top: 10px; padding: 10px 14px; background: #6b7280; color: #fff; border: 0; border-radius: 8px; cursor: pointer; }
 .upload-btn { margin-left: auto; }
 .file-chip { display: inline-flex; align-items: center; justify-content: center; min-height: 28px; padding: 5px 10px; border-radius: 999px; background: #dcfce7; color: #166534; font-size: 12px; font-weight: 700; }

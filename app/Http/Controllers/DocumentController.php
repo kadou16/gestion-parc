@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
+use App\Models\Maintenance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -10,7 +11,7 @@ class DocumentController extends Controller
     public function index()
     {
         return response()->json(
-            Document::with('vehicule')->get()
+            Document::with('vehicule', 'maintenance')->get()
         );
     }
 
@@ -18,12 +19,33 @@ class DocumentController extends Controller
     {
         $donnees = $request->validate([
             'vehicule_id' => 'required|exists:vehicules,idVehicule',
+            'maintenance_id' => 'required_if:type,Visite technique|nullable|exists:maintenances,idMaintenance',
             'type' => 'required|in:Assurance,Visite technique',
             'dateDebut' => 'required|date',
             'dateExpiration' => 'required|date|after_or_equal:dateDebut',
             'statut' => 'required|string',
             'fichier' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ]);
+
+        if ($donnees['type'] === 'Visite technique') {
+            $maintenance = Maintenance::withCount('documents')->findOrFail($donnees['maintenance_id']);
+
+            if ($maintenance->type !== 'Preventive') {
+                return response()->json([
+                    'message' => 'Seules les maintenances préventives peuvent avoir un document.'
+                ], 422);
+            }
+
+            if ($maintenance->documents_count > 0) {
+                return response()->json([
+                    'message' => 'Cette maintenance possède déjà un document.'
+                ], 422);
+            }
+
+            $donnees['vehicule_id'] = $maintenance->vehicule_id;
+        } else {
+            $donnees['maintenance_id'] = null;
+        }
 
         if ($request->hasFile('fichier')) {
             $donnees['fichier_path'] = $request->file('fichier')->store('documents', 'public');
@@ -37,7 +59,7 @@ class DocumentController extends Controller
     public function show($id)
     {
         return response()->json(
-            Document::with('vehicule', 'alertes')->findOrFail($id)
+            Document::with('vehicule', 'maintenance', 'alertes')->findOrFail($id)
         );
     }
 

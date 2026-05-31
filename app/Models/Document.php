@@ -11,13 +11,18 @@ class Document extends Model
     protected $primaryKey = 'idDocument';
 
     protected $fillable = [
-        'vehicule_id', 'type', 'dateDebut',
+        'vehicule_id', 'maintenance_id', 'type', 'dateDebut',
         'dateExpiration', 'statut', 'fichier_path'
     ];
 
     public function vehicule()
     {
         return $this->belongsTo(Vehicule::class, 'vehicule_id', 'idVehicule');
+    }
+
+    public function maintenance()
+    {
+        return $this->belongsTo(Maintenance::class, 'maintenance_id', 'idMaintenance');
     }
 
     public function alertes()

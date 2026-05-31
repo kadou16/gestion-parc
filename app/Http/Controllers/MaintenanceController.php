@@ -10,7 +10,7 @@ class MaintenanceController extends Controller
     public function index()
     {
         return response()->json(
-            Maintenance::with('vehicule')
+            Maintenance::with('vehicule', 'documents')
                 ->where('is_deleted', false)
                 ->get()
         );
@@ -40,7 +40,7 @@ class MaintenanceController extends Controller
     public function show($id)
     {
         return response()->json(
-            Maintenance::with('vehicule', 'alertes')
+            Maintenance::with('vehicule', 'documents', 'alertes')
                 ->where('is_deleted', false)
                 ->findOrFail($id)
         );

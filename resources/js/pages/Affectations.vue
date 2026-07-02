@@ -262,7 +262,6 @@ export default {
       return this.role === 'Admin';
     },
     vehiculesDisponibles() {
-      // Filtrer les véhicules pour ne garder que ceux qui sont 'Disponible'
       return this.vehicules.filter((v) => v.statut === 'Disponible');
     },
     filteredAffectations() {

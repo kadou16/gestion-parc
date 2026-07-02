@@ -10,6 +10,7 @@
         <div v-if="error" class="msg err">{{ error }}</div>
 
         <form
+          v-if="canWriteVehicules"
           ref="editorCard"
           :class="['card', { 'card-editing': editMode, 'card-flash': flashEditor }]"
           @submit.prevent="submitForm"
@@ -133,6 +134,7 @@
                       icon="delete"
                       variant="danger"
                       label="Supprimer le véhicule"
+                      v-if="canDeleteVehicules"
                       @click="askDeleteVehicule(v)"
                     />
                   </div>
@@ -226,6 +228,7 @@ export default {
       affectations: [],
       maintenances: [],
       documents: [],
+      role: localStorage.getItem('role') || '',
       administrateurId: null,
       detailsVehiculeId: null,
       loading: false,
@@ -266,6 +269,12 @@ export default {
     },
     showConducteurSelect() {
       return !this.editMode && this.form.statut === 'Affecté';
+    },
+    canWriteVehicules() {
+      return ['Admin', 'Gestionnaire'].includes(this.role);
+    },
+    canDeleteVehicules() {
+      return this.role === 'Admin';
     },
     selectedVehicule() {
       return this.vehicules.find((v) => v.idVehicule === this.detailsVehiculeId) || null;
@@ -318,9 +327,13 @@ export default {
     async loadAdministrateurId() {
       const me = await axios.get('/api/me');
       const userId = me.data?.user?.id;
-      const admins = await axios.get('/api/administrateurs');
-      const found = (admins.data || []).find((a) => a.utilisateur_id === userId);
-      this.administrateurId = found?.idAdministrateur || null;
+      if (me.data?.user?.administrateur) {
+        this.administrateurId = me.data.user.administrateur.idAdministrateur;
+      } else if (this.role === 'Admin') {
+        const admins = await axios.get('/api/administrateurs');
+        const found = (admins.data || []).find((a) => a.utilisateur_id === userId);
+        this.administrateurId = found?.idAdministrateur || null;
+      }
       this.form.administrateur_id = this.administrateurId;
     },
     calculerCoutTotal(idVehicule) {

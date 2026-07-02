@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Affectation;
+use App\Models\Administrateur;
 use App\Models\Vehicule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +17,7 @@ class VehiculeController extends Controller
     public function store(Request $request)
     {
         $donnees = $request->validate([
-            'administrateur_id' => 'required|exists:administrateurs,idAdministrateur',
+            'administrateur_id' => 'nullable|exists:administrateurs,idAdministrateur',
             'immatriculation' => 'required|string|unique:vehicules,immatriculation',
             'marque' => 'required|string',
             'modele' => 'required|string',
@@ -26,6 +27,15 @@ class VehiculeController extends Controller
             'etat' => 'required|in:Bon,Moyen,Endommagé',
             'conducteur_id' => 'nullable|exists:conducteurs,idConducteur',
         ]);
+
+        $donnees['administrateur_id'] = $donnees['administrateur_id']
+            ?? Administrateur::where('utilisateur_id', $request->user()?->id)->value('idAdministrateur');
+
+        if (empty($donnees['administrateur_id'])) {
+            return response()->json([
+                'message' => 'Aucun profil administrateur/gestionnaire associé à cet utilisateur.'
+            ], 422);
+        }
 
         if ($donnees['statut'] === 'Affecté' && empty($donnees['conducteur_id'])) {
             return response()->json([

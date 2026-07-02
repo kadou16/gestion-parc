@@ -17,7 +17,7 @@ class AuthController extends Controller
             'prenom' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'motdePasse' => 'required|min:6',
-            'role' => 'required|in:Admin,Conducteur',
+            'role' => 'required|in:Admin,Gestionnaire,Conducteur',
             'numPermis' => 'required_if:role,Conducteur|nullable|string|max:100',
             'DateExpPermis' => 'required_if:role,Conducteur|nullable|date',
         ]);
@@ -30,7 +30,7 @@ class AuthController extends Controller
             'motdePasse' => Hash::make($request->motdePasse),
         ]);
 
-        if ($request->role === 'Admin') {
+        if (in_array($request->role, ['Admin', 'Gestionnaire'], true)) {
             Administrateur::create([
                 'utilisateur_id' => $utilisateur->id,
                 'motdePasse' => $utilisateur->motdePasse,
@@ -83,7 +83,7 @@ class AuthController extends Controller
 
     public function me(Request $request)
     {
-        $utilisateur = $request->user();
+        $utilisateur = $request->user()?->load('administrateur');
 
         return response()->json([
             'user' => $utilisateur,

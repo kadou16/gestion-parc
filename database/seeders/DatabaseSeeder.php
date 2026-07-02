@@ -32,6 +32,19 @@ class DatabaseSeeder extends Seeder
             'motdePasse' => $utilisateur->motdePasse,
         ]);
 
+        $gestionnaire = Utilisateur::create([
+            'nom' => 'Gestionnaire',
+            'prenom' => 'Parc',
+            'email' => 'gestionnaire@example.com',
+            'role' => 'Gestionnaire',
+            'motdePasse' => Hash::make('password'),
+        ]);
+
+        Administrateur::create([
+            'utilisateur_id' => $gestionnaire->id,
+            'motdePasse' => $gestionnaire->motdePasse,
+        ]);
+
         $userConducteur = Utilisateur::create([
             'nom' => 'Ali',
             'prenom' => 'Karim',

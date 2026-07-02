@@ -62,6 +62,8 @@ export default {
 
         if (role === 'Admin') {
           this.$router.push('/dashboard');
+        } else if (role === 'Gestionnaire') {
+          this.$router.push('/vehicules');
         } else {
           this.$router.push('/profil');
         }

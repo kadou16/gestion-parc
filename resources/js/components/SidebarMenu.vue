@@ -64,15 +64,15 @@ export default {
     navItems() {
       return [
         { to: '/dashboard', label: 'Dashboard', icon: '📊', roles: ['Admin'] },
-        { to: '/vehicules', label: 'Véhicules', icon: '🚙', roles: ['Admin'] },
+        { to: '/vehicules', label: 'Véhicules', icon: '🚙', roles: ['Admin', 'Gestionnaire'] },
         { to: '/conducteurs', label: 'Conducteurs', icon: '👤', roles: ['Admin'] },
         { to: '/affectations', label: 'Affectations', icon: '📋', roles: ['Admin', 'Conducteur'] },
         { to: '/maintenances', label: 'Maintenances', icon: '🔧', roles: ['Admin'] },
         { to: '/documents', label: 'Documents', icon: '📄', roles: ['Admin'] },
         { to: '/evaluations', label: 'Évaluations', icon: '⭐', roles: ['Admin'] },
         { to: '/alertes', label: 'Alertes', icon: '🔔', roles: ['Admin'] },
-        { to: '/powerbi', label: 'Power BI', icon: '📈', roles: ['Admin'] },
-        { to: '/profil', label: 'Profil', icon: '🧾', roles: ['Admin', 'Conducteur'] },
+        { to: '/powerbi', label: 'Power BI', icon: '📈', roles: ['Admin', 'Gestionnaire'] },
+        { to: '/profil', label: 'Profil', icon: '🧾', roles: ['Admin', 'Gestionnaire', 'Conducteur'] },
       ];
     },
   },
